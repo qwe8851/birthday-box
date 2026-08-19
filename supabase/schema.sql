@@ -19,6 +19,7 @@ create table public.birthday_photos (
   gift_id uuid not null references public.birthday_gifts(id) on delete cascade,
   url text not null,
   storage_path text not null,
+  caption text not null default '' check (char_length(caption) <= 120),
   sort_order integer not null default 0 check (sort_order >= 0)
 );
 
