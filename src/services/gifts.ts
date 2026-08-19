@@ -16,7 +16,7 @@ export async function saveGift(g:BirthdayGift,coverFile:File|null,photoFiles:Map
  const{error:giftError}=await c.from('birthday_gifts').upsert({id:g.id,user_id:user.id,public_id:g.publicId,recipient_name:g.recipientName,birthday:g.birthday,cover_image:cover,letter:g.letter,gift:g.gift,is_published:g.isPublished},{onConflict:'id'})
  if(giftError)fail('기본 정보 저장 실패',giftError)
  const photos=[]
- for(const[i,p]of g.photos.entries()){const file=photoFiles.get(p.id);if(file){const ext=file.name.split('.').pop()?.toLowerCase()||'jpg',path=`${user.id}/${g.id}/photos/${p.id}.${ext}`;photos.push({id:p.id,gift_id:g.id,url:await upload(file,path),storage_path:path,caption:p.caption,sort_order:i})}else if(p.storagePath)photos.push({id:p.id,gift_id:g.id,url:p.url,storage_path:p.storagePath,caption:p.caption,sort_order:i})}
+ for(const[i,p]of g.photos.entries()){const file=photoFiles.get(p.id);if(file){const ext=file.name.split('.').pop()?.toLowerCase()||'jpg',path=`${user.id}/${g.id}/photos/${p.id}-${crypto.randomUUID()}.${ext}`;photos.push({id:p.id,gift_id:g.id,url:await upload(file,path),storage_path:path,caption:p.caption,sort_order:i})}else if(p.storagePath)photos.push({id:p.id,gift_id:g.id,url:p.url,storage_path:p.storagePath,caption:p.caption,sort_order:i})}
  let result=await c.from('birthday_photos').delete().eq('gift_id',g.id);if(result.error)fail('기존 사진 정리 실패',result.error)
  if(photos.length){result=await c.from('birthday_photos').insert(photos);if(result.error)fail('사진 정보 저장 실패',result.error)}
  result=await c.from('contract_terms').delete().eq('gift_id',g.id);if(result.error)fail('기존 계약 조항 정리 실패',result.error)
