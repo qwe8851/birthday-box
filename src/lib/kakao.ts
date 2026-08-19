@@ -1,5 +1,6 @@
 import type { BirthdayGift } from '../types'
 import { DEFAULT_COVER_IMAGE } from '../data/demo'
+import { eventOption } from './event'
 
 type KakaoSdk = {
   isInitialized: () => boolean
@@ -64,11 +65,12 @@ export async function shareGiftToKakao(gift: BirthdayGift) {
   const link = { mobileWebUrl: giftUrl, webUrl: giftUrl }
   const celebrationLink = { mobileWebUrl: celebrationUrl, webUrl: celebrationUrl }
 
+  const event = eventOption(gift.eventType)
   Kakao.Share.sendDefault({
     objectType: 'feed',
     content: {
-      title: `🎁 ${gift.recipientName}님에게 생일 선물이 도착했어요!`,
-      description: 'Birthday Box에 담긴 특별한 선물을 확인해 보세요.',
+      title: `${event.emoji} ${gift.recipientName}님에게 ${event.label} 이벤트가 도착했어요!`,
+      description: 'Event Box에 담긴 특별한 마음을 확인해 보세요.',
       imageUrl,
       link,
     },

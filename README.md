@@ -1,15 +1,14 @@
-# Birthday Box
+# Event Box
 
-친구를 위한 개인화 생일 장난 페이지를 만들고 고유 링크로 공유하는 모바일 우선 웹서비스입니다.
-
-> 천재 개발자 송승희가 만들었습니다. ✨
+소중한 사람을 위한 개인화 이벤트 페이지를 만들고 고유 링크로 공유하는 모바일 우선 웹서비스입니다.
 
 관리자가 친구 이름, 생일, 사진, 편지와 계약 조항을 작성하면 공개 URL이 생성됩니다. 친구는 링크에 접속해 생일을 입력한 뒤 선물 수령 인터랙션, 친구 계약서, 추억 사진과 편지를 확인할 수 있습니다.
 
 ## 주요 기능
 
 - Supabase 이메일·비밀번호 관리자 로그인
-- Birthday Box 생성, 목록 조회, 수정 및 삭제
+- 생일·기념일·축하·감사·응원 Event Box 생성, 목록 조회, 수정 및 삭제
+- 이벤트별 빨강·주황·노랑·초록·파랑·남색·보라·핑크 테마 설정
 - Supabase Database 영구 저장 및 Storage 이미지 업로드
 - 공개 여부와 랜덤 `publicId` 기반 공유 URL
 - 생일 일치 여부 확인
@@ -40,7 +39,8 @@ VITE_KAKAO_JAVASCRIPT_KEY=
 | 경로 | 용도 |
 | --- | --- |
 | `/login` | 관리자 로그인 |
-| `/admin/gifts` | Birthday Box 목록 |
+| `/admin/gifts` | Event Box 목록 |
+| `/release-notes` | 릴리즈 노트 및 운영 정보 |
 | `/admin/gifts/new` | 새 Box 생성 |
 | `/admin/gifts/:id/edit` | Box 수정 |
 | `/gift/:publicId` | 친구에게 공유하는 공개 페이지 |
