@@ -8,7 +8,7 @@ export function fromDb(r:Row):BirthdayGift{return{id:r.id,publicId:r.public_id,r
 const selection='*, birthday_photos(*), contract_terms(*)'
 export async function getMyGifts(){const{data,error}=await client().from('birthday_gifts').select(selection).order('created_at',{ascending:false});if(error)fail('목록 조회 실패',error);return(data??[]).map(fromDb)}
 export async function getPublicGift(id:string){const{data,error}=await client().from('birthday_gifts').select(selection).eq('public_id',id).eq('is_published',true).maybeSingle();if(error)fail('공개 Box 조회 실패',error);return data?fromDb(data):undefined}
-async function upload(file:File,path:string){const c=client(),{error}=await c.storage.from('birthday-images').upload(path,file,{upsert:false,contentType:file.type});if(error)fail('사진 업로드 실패',error);return c.storage.from('birthday-images').getPublicUrl(path).data.publicUrl}
+async function upload(file:File,path:string){const c=client(),{error}=await c.storage.from('birthday-images').upload(path,file,{upsert:true,contentType:file.type});if(error)fail('사진 업로드 실패',error);return c.storage.from('birthday-images').getPublicUrl(path).data.publicUrl}
 export async function saveGift(g:BirthdayGift,coverFile:File|null,photoFiles:Map<string,File>){
  const c=client(),{data:{user}}=await c.auth.getUser();if(!user)throw new Error('로그인이 만료되었습니다.')
  let cover=g.coverImage||DEFAULT_COVER_IMAGE
