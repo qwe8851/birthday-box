@@ -5,6 +5,7 @@ create table public.birthday_gifts (
   user_id uuid not null references auth.users(id) on delete cascade,
   public_id text not null unique check (public_id ~ '^[A-Za-z0-9_-]{8,32}$'),
   recipient_name text not null check (char_length(recipient_name) between 1 and 50),
+  creator_name text not null check (char_length(creator_name) between 1 and 50),
   birthday date not null,
   cover_image text,
   letter text not null default '' check (char_length(letter) <= 10000),
