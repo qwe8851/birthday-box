@@ -6,6 +6,8 @@ create table public.birthday_gifts (
   public_id text not null unique check (public_id ~ '^[A-Za-z0-9_-]{8,32}$'),
   recipient_name text not null check (char_length(recipient_name) between 1 and 50),
   creator_name text not null check (char_length(creator_name) between 1 and 50),
+  event_type text not null default 'birthday' check (event_type in ('birthday', 'anniversary', 'congratulations', 'thanks', 'cheer')),
+  theme_color text not null default 'pink' check (theme_color in ('red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'purple', 'pink')),
   birthday date not null,
   cover_image text,
   letter text not null default '' check (char_length(letter) <= 10000),
