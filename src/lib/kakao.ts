@@ -22,7 +22,9 @@ type ShareSettings = {
 type ShareLink = { mobileWebUrl: string; webUrl: string }
 
 declare global {
-  interface Window { Kakao?: KakaoSdk }
+  interface Window {
+    Kakao?: KakaoSdk
+  }
 }
 
 const SDK_URL = 'https://t1.kakaocdn.net/kakao_js_sdk/2.8.1/kakao.min.js'
@@ -38,11 +40,17 @@ function loadKakaoSdk() {
     const existing = document.querySelector<HTMLScriptElement>(`script[src="${SDK_URL}"]`)
     const script = existing ?? document.createElement('script')
 
-    script.addEventListener('load', () => {
-      if (window.Kakao) resolve(window.Kakao)
-      else reject(new Error('카카오 SDK를 불러오지 못했습니다.'))
-    }, { once: true })
-    script.addEventListener('error', () => reject(new Error('카카오 SDK 연결에 실패했습니다.')), { once: true })
+    script.addEventListener(
+      'load',
+      () => {
+        if (window.Kakao) resolve(window.Kakao)
+        else reject(new Error('카카오 SDK를 불러오지 못했습니다.'))
+      },
+      { once: true },
+    )
+    script.addEventListener('error', () => reject(new Error('카카오 SDK 연결에 실패했습니다.')), {
+      once: true,
+    })
 
     if (!existing) {
       script.src = SDK_URL
@@ -74,6 +82,9 @@ export async function shareGiftToKakao(gift: BirthdayGift) {
       imageUrl,
       link,
     },
-    buttons: [{ title: '선물 확인하기', link },{ title: '🎉 폭죽 터뜨리기', link: celebrationLink }],
+    buttons: [
+      { title: '선물 확인하기', link },
+      { title: '🎉 폭죽 터뜨리기', link: celebrationLink },
+    ],
   })
 }

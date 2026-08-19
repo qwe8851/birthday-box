@@ -36,14 +36,14 @@ VITE_KAKAO_JAVASCRIPT_KEY=
 
 ## 주요 경로
 
-| 경로 | 용도 |
-| --- | --- |
-| `/login` | 관리자 로그인 |
-| `/admin/gifts` | Event Box 목록 |
-| `/release-notes` | 릴리즈 노트 및 운영 정보 |
-| `/admin/gifts/new` | 새 Box 생성 |
-| `/admin/gifts/:id/edit` | Box 수정 |
-| `/gift/:publicId` | 친구에게 공유하는 공개 페이지 |
+| 경로                    | 용도                          |
+| ----------------------- | ----------------------------- |
+| `/login`                | 관리자 로그인                 |
+| `/admin/gifts`          | Event Box 목록                |
+| `/release-notes`        | 릴리즈 노트 및 운영 정보      |
+| `/admin/gifts/new`      | 새 Box 생성                   |
+| `/admin/gifts/:id/edit` | Box 수정                      |
+| `/gift/:publicId`       | 친구에게 공유하는 공개 페이지 |
 
 ## 빌드
 

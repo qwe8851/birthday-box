@@ -1,2 +1,68 @@
-import{StrictMode,useEffect}from'react';import{createRoot}from'react-dom/client';import{BrowserRouter,Navigate,Route,Routes}from'react-router-dom';import{useAuth}from'./stores/auth';import LoginPage from'./views/LoginPage';import SignUpPage from'./views/SignUpPage';import AdminGifts from'./views/AdminGifts';import GiftEditor from'./views/GiftEditor';import GiftPage from'./views/GiftPage';import ReleaseNotes from'./views/ReleaseNotes';import'./style.css';
-function Guard({children}:{children:React.ReactNode}){const{user,ready,init}=useAuth();useEffect(()=>{if(!ready)void init()},[ready,init]);if(!ready)return <main className="stage"><div className="loader"/></main>;return user?children:<Navigate to="/login" replace/>}function App(){return <Routes><Route path="/" element={<Navigate to="/login" replace/>}/><Route path="/login" element={<LoginPage/>}/><Route path="/signup" element={<SignUpPage/>}/><Route path="/release-notes" element={<ReleaseNotes/>}/><Route path="/gift/:publicId" element={<GiftPage/>}/><Route path="/admin" element={<Navigate to="/admin/gifts" replace/>}/><Route path="/admin/gifts" element={<Guard><AdminGifts/></Guard>}/><Route path="/admin/gifts/new" element={<Guard><GiftEditor/></Guard>}/><Route path="/admin/gifts/:id/edit" element={<Guard><GiftEditor/></Guard>}/><Route path="*" element={<Navigate to="/login" replace/>}/></Routes>}createRoot(document.getElementById('root')!).render(<StrictMode><BrowserRouter><App/></BrowserRouter></StrictMode>)
+import { StrictMode, useEffect } from 'react'
+import { createRoot } from 'react-dom/client'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { useAuth } from './stores/auth'
+import LoginPage from './views/LoginPage'
+import SignUpPage from './views/SignUpPage'
+import AdminGifts from './views/AdminGifts'
+import GiftEditor from './views/GiftEditor'
+import GiftPage from './views/GiftPage'
+import ReleaseNotes from './views/ReleaseNotes'
+import './style.css'
+function Guard({ children }: { children: React.ReactNode }) {
+  const { user, ready, init } = useAuth()
+  useEffect(() => {
+    if (!ready) void init()
+  }, [ready, init])
+  if (!ready)
+    return (
+      <main className="stage">
+        <div className="loader" />
+      </main>
+    )
+  return user ? children : <Navigate to="/login" replace />
+}
+function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<Navigate to="/login" replace />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/signup" element={<SignUpPage />} />
+      <Route path="/release-notes" element={<ReleaseNotes />} />
+      <Route path="/gift/:publicId" element={<GiftPage />} />
+      <Route path="/admin" element={<Navigate to="/admin/gifts" replace />} />
+      <Route
+        path="/admin/gifts"
+        element={
+          <Guard>
+            <AdminGifts />
+          </Guard>
+        }
+      />
+      <Route
+        path="/admin/gifts/new"
+        element={
+          <Guard>
+            <GiftEditor />
+          </Guard>
+        }
+      />
+      <Route
+        path="/admin/gifts/:id/edit"
+        element={
+          <Guard>
+            <GiftEditor />
+          </Guard>
+        }
+      />
+      <Route path="*" element={<Navigate to="/login" replace />} />
+    </Routes>
+  )
+}
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </StrictMode>,
+)
