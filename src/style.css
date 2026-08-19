@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@500;600;700&family=Gowun+Dodum&family=Manrope:wght@600;700;800&display=swap');
 :root {
-  font-family: 'DM Sans', 'Gowun Dodum', sans-serif;
+  font-family: 'Gowun Dodum', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
   color: #29231f;
   background: #fffaf6;
   font-synthesis: none;
@@ -10,6 +10,8 @@
   --cream: #fffaf6;
   --line: #eee3dc;
   --mint: #dff4ec;
+  --font-sans: 'Gowun Dodum', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+  --font-display: 'Manrope', 'Gowun Dodum', 'Apple SD Gothic Neo', sans-serif;
 }
 * {
   box-sizing: border-box;
@@ -1206,6 +1208,135 @@ p {
     overflow: hidden;
   }
 }
+
+/* Full-height application layout */
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+}
+#root {
+  min-height: 100dvh;
+}
+body,
+button,
+input,
+select,
+textarea {
+  font-family: var(--font-sans);
+}
+.eyebrow,
+.page-heading h1,
+.editor-title h1,
+.stage h1,
+.price strong,
+.finale h1,
+.footer-brand strong,
+.release-content h1 {
+  font-family: var(--font-display);
+}
+.admin-shell,
+.release-page,
+.auth-page {
+  width: 100%;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+.admin-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  width: 100%;
+  flex: 0 0 72px;
+}
+.admin-content,
+.editor-layout,
+.release-content {
+  width: 100%;
+  flex: 1 0 auto;
+}
+.site-footer {
+  width: 100%;
+  margin-top: auto;
+  flex-shrink: 0;
+}
+.auth-page {
+  padding: 0;
+  place-items: initial;
+}
+.auth-main {
+  width: 100%;
+  min-height: max(680px, calc(100dvh - 255px));
+  flex: 1 0 auto;
+  display: grid;
+  place-items: center;
+  padding: 48px 24px;
+  background: radial-gradient(circle at 25% 15%, #ffdfe5, transparent 35%), #fffaf6;
+}
+.auth-card {
+  margin: 0 auto;
+}
+.auth-header {
+  justify-content: space-between;
+}
+.auth-header > a:last-child {
+  color: #6f645e;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+/* Live preview */
+.phone {
+  min-height: 640px;
+}
+.phone > .phone-theme {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+.phone-theme > img {
+  flex: 0 0 46%;
+  min-height: 0;
+}
+.phone-theme > div {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 18px;
+}
+.phone-theme h3 {
+  margin: 14px 0 20px;
+}
+.phone.big {
+  min-height: min(720px, 80dvh);
+  max-height: 80dvh;
+}
+
+@media (max-width: 850px) {
+  .editor-layout {
+    min-height: calc(100dvh - 72px);
+  }
+}
+@media (max-width: 560px) {
+  .auth-main {
+    min-height: calc(100dvh - 72px);
+    padding: 32px 16px;
+  }
+  .footer-inner {
+    padding: 40px 20px;
+  }
+  .admin-header {
+    flex-basis: 64px;
+    height: 64px;
+  }
+}
 .auth-card label small {
   color: #9b918b;
   font-weight: 400;
@@ -1698,4 +1829,45 @@ p {
   .footer-columns > div:last-child {
     grid-column: 1/-1;
   }
+}
+
+/* Keep layout and preview overrides last in the cascade. */
+.admin-shell,
+.release-page,
+.auth-page {
+  width: 100%;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+.admin-content,
+.editor-layout,
+.release-content,
+.auth-main {
+  flex: 1 0 auto;
+}
+.site-footer {
+  width: 100%;
+  margin-top: auto;
+}
+.phone > .phone-theme {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+.phone-theme > img {
+  flex: 0 0 46%;
+  height: 46%;
+  min-height: 0;
+}
+.phone-theme > div {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 18px;
 }

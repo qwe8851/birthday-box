@@ -11,6 +11,7 @@ import type { BirthdayGift } from '../types'
 import { normalizeImage } from '../lib/images'
 import { useAuth } from '../stores/auth'
 import { EVENT_OPTIONS, THEME_OPTIONS, eventOption, themeOption } from '../lib/event'
+import SiteFooter from '../components/SiteFooter'
 export default function GiftEditor() {
   const { id } = useParams(),
     { gifts, save, loading } = useGifts(),
@@ -120,6 +121,7 @@ export default function GiftEditor() {
             <label>
               이벤트 종류
               <select
+                name="eventType"
                 value={form.eventType}
                 onChange={e => patch({ eventType: e.target.value as BirthdayGift['eventType'] })}
               >
@@ -152,6 +154,9 @@ export default function GiftEditor() {
               <label>
                 받는 사람 이름
                 <input
+                  type="text"
+                  name="recipientName"
+                  autoComplete="name"
                   value={form.recipientName}
                   onChange={e => patch({ recipientName: e.target.value })}
                   placeholder="예: 햄니"
@@ -161,6 +166,7 @@ export default function GiftEditor() {
               <label>
                 {eventOption(form.eventType).dateLabel}
                 <input
+                  name="eventDate"
                   value={form.birthday}
                   onChange={e => patch({ birthday: e.target.value })}
                   type="date"
@@ -198,6 +204,9 @@ export default function GiftEditor() {
                     </button>
                   </div>
                   <input
+                    type="text"
+                    name={`photoCaption-${i}`}
+                    autoComplete="off"
                     value={p.caption}
                     maxLength={120}
                     aria-label={`${i + 1}번째 사진 문구`}
@@ -228,6 +237,8 @@ export default function GiftEditor() {
               <span>03</span> 생일 편지
             </h2>
             <textarea
+              name="letter"
+              autoComplete="off"
               value={form.letter}
               onChange={e => patch({ letter: e.target.value })}
               rows={6}
@@ -242,6 +253,9 @@ export default function GiftEditor() {
             <label>
               이용권 이름
               <input
+                type="text"
+                name="giftTitle"
+                autoComplete="off"
                 value={form.gift.title}
                 onChange={e => patch({ gift: { ...form.gift, title: e.target.value } })}
                 required
@@ -251,6 +265,7 @@ export default function GiftEditor() {
               <label>
                 정상가
                 <input
+                  name="originalPrice"
                   value={form.gift.originalPrice}
                   onChange={e => patch({ gift: { ...form.gift, originalPrice: +e.target.value } })}
                   type="number"
@@ -259,6 +274,9 @@ export default function GiftEditor() {
               <label>
                 유효기간
                 <input
+                  type="text"
+                  name="validity"
+                  autoComplete="off"
                   value={form.gift.validity}
                   onChange={e => patch({ gift: { ...form.gift, validity: e.target.value } })}
                 />
@@ -302,6 +320,9 @@ export default function GiftEditor() {
               <div className="term-input" key={t.id}>
                 <b>{i + 1}</b>
                 <input
+                  type="text"
+                  name={`contractTerm-${i}`}
+                  autoComplete="off"
                   value={t.content}
                   onChange={e =>
                     patch({
@@ -358,6 +379,7 @@ export default function GiftEditor() {
           </div>
         </div>
       )}
+      <SiteFooter />
     </main>
   )
 }
