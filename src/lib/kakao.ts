@@ -59,8 +59,10 @@ export async function shareGiftToKakao(gift: BirthdayGift) {
   if (!Kakao.isInitialized()) Kakao.init(javascriptKey)
 
   const giftUrl = absoluteUrl(`/gift/${gift.publicId}`)
+  const celebrationUrl = `${giftUrl}?celebrate=1`
   const imageUrl = absoluteUrl(gift.coverImage || DEFAULT_COVER_IMAGE)
   const link = { mobileWebUrl: giftUrl, webUrl: giftUrl }
+  const celebrationLink = { mobileWebUrl: celebrationUrl, webUrl: celebrationUrl }
 
   Kakao.Share.sendDefault({
     objectType: 'feed',
@@ -70,6 +72,6 @@ export async function shareGiftToKakao(gift: BirthdayGift) {
       imageUrl,
       link,
     },
-    buttons: [{ title: '선물 확인하기', link }],
+    buttons: [{ title: '선물 확인하기', link },{ title: '🎉 폭죽 터뜨리기', link: celebrationLink }],
   })
 }
