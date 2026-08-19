@@ -52,6 +52,8 @@ npm run preview
 
 Supabase 프로젝트 설정은 [Supabase 설정 가이드](docs/SUPABASE_SETUP.md)를 참고하세요.
 
+운영 서버 배포는 [Vercel 배포 가이드](docs/DEPLOYMENT.md)를 참고하세요.
+
 ## 주의사항
 
 - `.env.local`은 Git에 커밋하지 않습니다.
