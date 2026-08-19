@@ -1,0 +1,3 @@
+import {create} from 'zustand';import {supabase} from '../lib/supabase'
+type Auth={user:{email?:string}|null;ready:boolean;init:()=>Promise<void>;signIn:(e:string,p:string)=>Promise<void>;signOut:()=>Promise<void>}
+export const useAuth=create<Auth>(set=>({user:null,ready:false,init:async()=>{if(!supabase){set({ready:true});return}const{data}=await supabase.auth.getUser();set({user:data.user,ready:true});supabase.auth.onAuthStateChange((_e,s)=>set({user:s?.user??null}))},signIn:async(email,password)=>{if(!supabase)throw new Error('Supabase 환경변수가 설정되지 않았습니다.');const{error}=await supabase.auth.signInWithPassword({email,password});if(error)throw error},signOut:async()=>{if(supabase)await supabase.auth.signOut();set({user:null})}}))
