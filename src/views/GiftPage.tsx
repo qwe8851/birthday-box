@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useParams } from 'react-router-dom'
 import { useGifts } from '../stores/gifts'
-import { DEFAULT_PHOTO_CAPTIONS } from '../data/demo'
 import { eventOption, themeOption } from '../lib/event'
 import SiteFooter from '../components/SiteFooter'
 import type { BirthdayGift, GiftStep } from '../types'
@@ -68,7 +67,7 @@ export default function GiftPage() {
         } as React.CSSProperties
       }
     >
-      {celebrate && <ShareCelebration name={gift.recipientName} />}{' '}
+      {celebrate && <ShareCelebration gift={gift} />}{' '}
       {step === 'landing' && <Landing {...common} />}{' '}
       {step === 'recipient-check' && <Check {...common} />}{' '}
       {step === 'loading' && <Loading gift={gift} progress={progress} />}{' '}
@@ -81,7 +80,8 @@ export default function GiftPage() {
     </main>
   )
 }
-function ShareCelebration({ name }: { name: string }) {
+function ShareCelebration({ gift }: { gift: BirthdayGift }) {
+  const event = eventOption(gift.eventType)
   return (
     <div className="share-celebration" role="status">
       <div className="confetti" aria-hidden>
@@ -96,7 +96,9 @@ function ShareCelebration({ name }: { name: string }) {
           />
         ))}
       </div>
-      <strong>🎉 {name}님의 생일 선물이 도착했어요!</strong>
+      <strong>
+        {event.emoji} {gift.recipientName}님에게 {event.label} 이벤트가 도착했어요!
+      </strong>
     </div>
   )
 }
@@ -212,33 +214,36 @@ function Loading({ gift, progress }: { gift: BirthdayGift; progress: number }) {
   )
 }
 function Reveal({ gift, next, rejects, reject }: P & { rejects: number; reject: () => void }) {
+  const event = eventOption(gift.eventType)
   const words = [
     '정말 거절할 거야? 🥺',
     '거절하지 마...',
     '선물 받아줘!',
-    '우리 평생 친구잖아 💗',
+    '이 마음을 받아줘 💗',
     '한 번만 다시 생각해 봐',
     '이 버튼은 잡을 수 없지 😝',
     '수령하기가 더 쉬울걸?',
-    '친구야, 제발 받아줘 🎁',
+    '제발 받아줘 🎁',
   ]
   return (
     <>
       <section className="stage reveal">
         <div className="spark">✦</div>
-        <p className="eyebrow">CONGRATULATIONS!</p>
-        <h1>축하합니다, {gift.recipientName}님!</h1>
-        <p>이번 생일 선물은 바로...</p>
+        <p className="eyebrow">{event.revealEyebrow}</p>
+        <h1>
+          {gift.recipientName}님, {event.revealTitle}!
+        </h1>
+        <p>{event.revealIntro}</p>
         <article className="ticket">
           <div className="ticket-top">
-            <span>💖</span>
-            <small>BIRTHDAY SPECIAL TICKET</small>
+            <span>{event.emoji}</span>
+            <small>{event.ticketLabel}</small>
             <h2>{gift.gift.title}</h2>
           </div>
           <div className="price">
             <del>₩{gift.gift.originalPrice.toLocaleString()}</del>
             <strong>₩{gift.gift.salePrice.toLocaleString()}</strong>
-            <span>생일 특별가</span>
+            <span>{event.priceLabel}</span>
           </div>
           <dl>
             <div>
@@ -317,12 +322,13 @@ function RunawayButton({ reject, count }: { reject: () => void; count: number })
   )
 }
 function Complete({ gift, next }: P) {
+  const event = eventOption(gift.eventType)
   return (
     <section className="stage">
       <div className="checkmark">✓</div>
       <p className="eyebrow">CONTRACT COMPLETE</p>
       <h1>계약이 완료되었습니다!</h1>
-      <p className="muted">이제 공식적으로 평생 친구가 되었어요 🎉</p>
+      <p className="muted">{event.completeMessage}</p>
       <div className="summary">
         <div>
           <span>계약기간</span>
@@ -348,14 +354,15 @@ function Complete({ gift, next }: P) {
   )
 }
 function Contract({ gift, next }: P) {
+  const event = eventOption(gift.eventType)
   return (
     <section className="stage contract-stage">
       <p className="eyebrow">OFFICIAL DOCUMENT</p>
       <article className="paper">
         <div className="paper-head">
           <span>📃</span>
-          <h1>평생 친구 계약서</h1>
-          <p>본 계약서는 서로의 우정과 행복을 위해 작성되었습니다.</p>
+          <h1>{event.contractTitle}</h1>
+          <p>{event.contractDescription}</p>
         </div>
         <ol>
           {gift.contractTerms.map((t, i) => (
@@ -373,9 +380,12 @@ function Contract({ gift, next }: P) {
           <p>{new Date().toLocaleDateString('ko-KR')}</p>
         </div>
         <div className="stamp">
-          평생
-          <br />
-          친구
+          {event.stamp.split('\n').map((line, index) => (
+            <span key={line}>
+              {index > 0 && <br />}
+              {line}
+            </span>
+          ))}
         </div>
       </article>
       <button className="btn primary gift-btn" onClick={() => next('birthday')}>
@@ -413,12 +423,12 @@ function Finale({ gift }: { gift: BirthdayGift }) {
       </div>
       <div className="memories">
         <p className="eyebrow">OUR MEMORIES</p>
-        <h2>함께라서 더 빛났던 순간들</h2>
+        <h2>{event.memoryTitle}</h2>
         {gift.photos.map((p, i) => (
           <figure key={p.id} className={i % 2 ? 'tilt-right' : 'tilt-left'}>
             <img src={p.url} loading="lazy" alt={`${gift.recipientName}님과의 추억 ${i + 1}`} />
             <figcaption>
-              {p.caption || DEFAULT_PHOTO_CAPTIONS[i % DEFAULT_PHOTO_CAPTIONS.length]}
+              {p.caption || event.photoCaptions[i % event.photoCaptions.length]}
             </figcaption>
           </figure>
         ))}
@@ -429,7 +439,7 @@ function Finale({ gift }: { gift: BirthdayGift }) {
         <h2>To. {gift.recipientName}</h2>
         <p>{gift.letter}</p>
         <div className="letter-end">
-          앞으로도 좋은 일만 가득하길
+          {event.letterEnd}
           <br />
           <strong>{event.emoji} 💗</strong>
         </div>

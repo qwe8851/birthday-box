@@ -1,12 +1,7 @@
 import { ChangeEvent, FormEvent, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useGifts } from '../stores/gifts'
-import {
-  DEFAULT_BIRTHDAY_LETTER,
-  DEFAULT_COVER_IMAGE,
-  DEFAULT_PHOTO_CAPTIONS,
-  demoGift,
-} from '../data/demo'
+import { DEFAULT_COVER_IMAGE, demoGift } from '../data/demo'
 import type { BirthdayGift } from '../types'
 import { normalizeImage } from '../lib/images'
 import { useAuth } from '../stores/auth'
@@ -19,8 +14,12 @@ export default function GiftEditor() {
     existing = gifts.find(g => g.id === id),
     user = useAuth(s => s.user),
     creatorName = user?.user_metadata?.name?.trim() || user?.email?.split('@')[0] || '보낸 사람'
-  const defaultTerms = () =>
-    demoGift.contractTerms.map((t, i) => ({ ...t, id: crypto.randomUUID(), sortOrder: i }))
+  const defaultTerms = (type: BirthdayGift['eventType'] = 'birthday') =>
+    eventOption(type).defaultTerms.map((content, i) => ({
+      id: crypto.randomUUID(),
+      content,
+      sortOrder: i,
+    }))
   const [form, setForm] = useState<BirthdayGift>(() =>
       structuredClone(
         existing
@@ -35,7 +34,7 @@ export default function GiftEditor() {
               },
               contractTerms: existing.contractTerms.length
                 ? existing.contractTerms
-                : defaultTerms(),
+                : defaultTerms(existing.eventType),
             }
           : {
               ...demoGift,
@@ -46,7 +45,7 @@ export default function GiftEditor() {
               birthday: '',
               coverImage: DEFAULT_COVER_IMAGE,
               photos: [],
-              letter: DEFAULT_BIRTHDAY_LETTER,
+              letter: eventOption('birthday').defaultLetter,
               gift: { ...demoGift.gift, customerService: creatorName },
               contractTerms: defaultTerms(),
               createdAt: new Date().toISOString(),
@@ -77,7 +76,9 @@ export default function GiftEditor() {
             return {
               id,
               url: URL.createObjectURL(file),
-              caption: DEFAULT_PHOTO_CAPTIONS[sortOrder % DEFAULT_PHOTO_CAPTIONS.length],
+              caption: eventOption(current.eventType).photoCaptions[
+                sortOrder % eventOption(current.eventType).photoCaptions.length
+              ],
               sortOrder,
             }
           })
@@ -123,7 +124,20 @@ export default function GiftEditor() {
               <select
                 name="eventType"
                 value={form.eventType}
-                onChange={e => patch({ eventType: e.target.value as BirthdayGift['eventType'] })}
+                onChange={e => {
+                  const eventType = e.target.value as BirthdayGift['eventType'],
+                    selected = eventOption(eventType)
+                  patch({
+                    eventType,
+                    letter: selected.defaultLetter,
+                    gift: { ...form.gift, title: selected.defaultGiftTitle },
+                    contractTerms: defaultTerms(eventType),
+                    photos: form.photos.map((photo, index) => ({
+                      ...photo,
+                      caption: selected.photoCaptions[index % selected.photoCaptions.length],
+                    })),
+                  })
+                }}
               >
                 {EVENT_OPTIONS.map(option => (
                   <option key={option.value} value={option.value}>
@@ -234,7 +248,7 @@ export default function GiftEditor() {
           </section>
           <section className="form-section">
             <h2>
-              <span>03</span> 생일 편지
+              <span>03</span> {eventOption(form.eventType).letterLabel}
             </h2>
             <textarea
               name="letter"
@@ -292,7 +306,7 @@ export default function GiftEditor() {
                 <button
                   type="button"
                   className="text-btn"
-                  onClick={() => patch({ contractTerms: defaultTerms() })}
+                  onClick={() => patch({ contractTerms: defaultTerms(form.eventType) })}
                 >
                   기본 조항 불러오기
                 </button>

@@ -1,5 +1,6 @@
 import { supabase } from '../lib/supabase'
-import { DEFAULT_COVER_IMAGE, DEFAULT_PHOTO_CAPTIONS } from '../data/demo'
+import { DEFAULT_COVER_IMAGE } from '../data/demo'
+import { eventOption } from '../lib/event'
 import type { BirthdayGift } from '../types'
 type Row = Record<string, any>
 const fail = (stage: string, error: { message: string }) => {
@@ -10,12 +11,14 @@ function client() {
   return supabase
 }
 export function fromDb(r: Row): BirthdayGift {
+  const eventType = (r.event_type || 'birthday') as BirthdayGift['eventType'],
+    event = eventOption(eventType)
   return {
     id: r.id,
     publicId: r.public_id,
     recipientName: r.recipient_name,
     creatorName: r.creator_name || '보낸 사람',
-    eventType: r.event_type || 'birthday',
+    eventType,
     themeColor: r.theme_color || 'pink',
     birthday: r.birthday,
     coverImage: r.cover_image ?? DEFAULT_COVER_IMAGE,
@@ -26,7 +29,7 @@ export function fromDb(r: Row): BirthdayGift {
       .map((p: Row, i: number) => ({
         id: p.id,
         url: p.url,
-        caption: p.caption || DEFAULT_PHOTO_CAPTIONS[i % DEFAULT_PHOTO_CAPTIONS.length],
+        caption: p.caption || event.photoCaptions[i % event.photoCaptions.length],
         sortOrder: p.sort_order,
         storagePath: p.storage_path,
       })),
